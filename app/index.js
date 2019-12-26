@@ -174,7 +174,7 @@ clock.ontick = ( evt ) => {
 display.addEventListener( "change", ( ) => {
     if ( display.on ) {
         if ( ! updateStarsInterval ) {
-            updateStarsInterval = setInterval( updateStars, 100 );
+            updateStarsInterval = setInterval( updateStars, 50 );
         }
     } else {
         clearInterval( updateStarsInterval );
@@ -182,4 +182,4 @@ display.addEventListener( "change", ( ) => {
     }
 });
 
-updateStarsInterval = setInterval( updateStars, 100 );
+updateStarsInterval = setInterval( updateStars, 50 );
