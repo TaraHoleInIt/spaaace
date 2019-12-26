@@ -1,0 +1,30 @@
+<svg class="background">
+	<circle id="star1" />
+	<circle id="star2" />
+	<circle id="star3" />
+	<circle id="star4" />
+	<circle id="star5" />
+	<circle id="star6" />
+	<circle id="star7" />
+	<circle id="star8" />
+	<circle id="star9" />
+	<circle id="star10" />
+	<circle id="star11" />
+	<circle id="star12" />
+	<circle id="star13" />
+	<circle id="star14" />
+	<circle id="star15" />
+	<circle id="star16" />
+	<circle id="star17" />
+	<circle id="star18" />
+	<circle id="star19" />
+	<circle id="star20" />
+	<circle id="star21" />
+	<circle id="star22" />
+	<circle id="star23" />
+	<circle id="star24" />
+	<circle id="star25" />
+
+	<text id="clockText" />
+	<text id="ampmText" />
+</svg>

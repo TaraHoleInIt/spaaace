@@ -1,0 +1,32 @@
+.defaultText {
+	font-size: 32;
+	font-family: System-Regular;
+	font-weight: regular;
+	text-length: 32;
+}
+
+.background {
+	viewport-fill: black;
+}
+
+#clockText {
+	font-family: Fabrikat-Black;
+	font-size: 96;
+	font-weight: bold;
+	text-length: 32;
+	text-anchor: middle;
+	x: 50%;
+	y: 50%+48;
+	fill: fb-cyan;
+}
+
+#ampmText {
+	font-family: Fabrikat-Black;
+	font-size: 32;
+	font-weight: bold;
+	text-length: 32;
+	text-anchor: end;
+	x: 100%;
+	y: 50%+44;
+	fill: fb-cyan;
+}
