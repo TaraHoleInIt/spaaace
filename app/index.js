@@ -1,6 +1,6 @@
 import document from "document";
 import clock from "clock";
-import display from "display";
+import { display } from "display";
 import { preferences } from "user-settings";
 import { me as device } from "device";
 
@@ -171,14 +171,14 @@ clock.ontick = ( evt ) => {
     clockText.text = hoursText + ":" + minsText;
 };
 
-display.addEventListener( "change", ( evt ) => {
+display.addEventListener( "change", ( ) => {
     if ( display.on ) {
-
         if ( ! updateStarsInterval ) {
             updateStarsInterval = setInterval( updateStars, 100 );
         }
     } else {
         clearInterval( updateStarsInterval );
+        updateStarsInterval = 0;
     }
 });
 
