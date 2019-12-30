@@ -4,6 +4,7 @@ import { display } from "display";
 import { preferences } from "user-settings";
 import { me as device } from "device";
 import { peerSocket, MessageEvent } from "messaging";
+import * as fs from "fs";
 
 var simpleDate: boolean = false;
 var shouldShowDate: boolean = true;
@@ -22,6 +23,11 @@ var updateStarsInterval = 0;
 let dateText = document.getElementById( "dateText" ) as TextElement;
 let clockText = document.getElementById( "clockText" ) as TextElement;
 let ampmText = document.getElementById( "ampmText" ) as TextElement;
+
+interface saveRestore {
+    key: string;
+    value: string;
+}
 
 interface star {
     x: number;
@@ -251,10 +257,54 @@ dateText.style.fill = clockColor;
 
 updateStarsInterval = setInterval( updateStars, animationSpeed );
 
-peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
-    var key: string = evt.data.key as string;
-    var value: string = evt.data.value as string;
+let defaultSettings: saveRestore[ ] = [
+    { key: "clockColor", value: `"skyblue"` },
+    { key: "simpleDate", value: `false` },
+    { key: "shouldShowDate", value: `true` },
+    { key: "starsCount", value: `10` },
+    { key: "warpSpeed", value: `1` },
+    { key: "animationSpeed", value: `100` }
+];
 
+function saveRestore_SetDefaults( ) {
+    defaultSettings.forEach( ( item: saveRestore, index: number ) => {
+        handleSettingsChange( item.key, item.value );
+    }
+);}
+
+function saveRestore_Save( ) {
+    fs.writeFileSync( "space.set", JSON.stringify( [
+        { key: "clockColor", value: `"${clockColor}"` },
+        { key: "simpleDate", value: simpleDate },
+        { key: "shouldShowDate", value: shouldShowDate },
+        { key: "starsCount", value: starsCount },
+        { key: "warpSpeed", value: warpSpeed },
+        { key: "animationSpeed", value: animationSpeed }
+    ], ), "json" );
+}
+
+function saveRestore_Restore( ) {
+    let saveData: saveRestore[ ] = JSON.parse( fs.readFileSync( "space.set", "json" ) );
+
+    console.info( "saveRestore_Restore( ): " );
+
+    saveData.forEach( ( item: saveRestore, index: number ) => {
+        console.log( item.key + "/" + item.value );
+        handleSettingsChange( item.key, item.value );
+    });
+}
+
+if ( fs.existsSync( "space.set" ) ) {
+    console.info( "Settings found!" );
+    saveRestore_Restore( );
+} else {
+    console.info( "Settings not found, setting defaults" );
+
+    saveRestore_SetDefaults( );
+    saveRestore_Save( );
+}
+
+function handleSettingsChange( key: string, value: string ) {
     switch ( key ) {
         case "clockColor": {
             clockColor = JSON.parse( value );
@@ -263,10 +313,14 @@ peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
             ampmText.style.fill = clockColor;
             dateText.style.fill = clockColor;
 
+            console.log( "clockColor: " + clockColor );
+
             break;
         }
         case "starsCount": {
             starsCount = Number( value );
+
+            console.log( "starsCount: " + starsCount );
 
             initStars( );
             break;
@@ -277,6 +331,8 @@ peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
             // Clamp animation speed to between 33 and 1000ms
             animationSpeed = ( animationSpeed < 33 ) ? 33 : animationSpeed;
             animationSpeed = ( animationSpeed > 1000 ) ? 1000 : animationSpeed;
+
+            console.log( "animationSpeed: " + animationSpeed );
 
             if ( updateStarsInterval ) {
                 clearInterval( updateStarsInterval );
@@ -308,4 +364,22 @@ peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
         }
         default: break;
     }
+
+    saveRestore_Save( );
+}
+
+peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
+    var key: string = evt.data.key as string;
+    var value: string = evt.data.value as string;
+
+    handleSettingsChange( key, value );
+});
+
+peerSocket.addEventListener( "open", ( evt: Event ) => {
+    peerSocket.send( { key: "clockColor", value: `"${clockColor}"`} );
+    peerSocket.send( { key: "simpleDate", value: simpleDate } );
+    peerSocket.send( { key: "showDate", value: shouldShowDate } );
+    peerSocket.send( { key: "starsCount", value: starsCount } );
+    peerSocket.send( { key: "warpSpeed", value: warpSpeed } );
+    peerSocket.send( { key: "animationSpeed", value: animationSpeed } );
 });

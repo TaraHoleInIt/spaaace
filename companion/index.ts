@@ -21,6 +21,16 @@ function checkAndSetDefaults( key: string, defaultValue: string ) {
     sendSettingToApp( key, settingsStorage.getItem( key ) as string );
 }
 
+peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
+    var key: string = evt.data.key;
+    var value: string = evt.data.value;
+
+    console.info( "COMPANION: " + key + "/" + value );
+
+    //settingsStorage.setItem( key, value );
+});
+
+/*
 peerSocket.addEventListener( "open", ( evt: Event ) => {
     checkAndSetDefaults( "clockColor", "\"skyblue\"" );
     checkAndSetDefaults( "showDate", "true" );
@@ -29,4 +39,4 @@ peerSocket.addEventListener( "open", ( evt: Event ) => {
     checkAndSetDefaults( "animationSpeed", "100" );
     checkAndSetDefaults( "warpSpeed", "1" );
 } );
-
+*/
