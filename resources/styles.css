@@ -17,7 +17,6 @@
 	text-anchor: middle;
 	x: 50%;
 	y: 50%+48;
-	fill: fb-cyan;
 }
 
 #ampmText {
@@ -28,5 +27,14 @@
 	text-anchor: end;
 	x: 100%;
 	y: 50%+44;
-	fill: fb-cyan;
+}
+
+#dateText {
+	font-family: Fabrikat-Black;
+	font-size: 24;
+	font-weight: bold;
+	text-length: 64;
+	text-anchor: middle;
+	x: 50%;
+	y: 10%;
 }

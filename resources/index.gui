@@ -27,4 +27,6 @@
 
 	<text id="clockText" />
 	<text id="ampmText" />
+
+	<text id="dateText" />
 </svg>
