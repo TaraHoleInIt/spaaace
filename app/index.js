@@ -4,6 +4,8 @@ import { display } from "display";
 import { preferences } from "user-settings";
 import { me as device } from "device";
 
+var starsUpdateRate = 50;
+
 var screenCenterX = 0;
 var screenCenterY = 0;
 var screenWidth = 0;
@@ -150,7 +152,7 @@ screenCenterY = ( screenHeight / 2 );
 
 initStars( );
 
-clock.granularity = "seconds";
+clock.granularity = "minutes";
 clock.ontick = ( evt ) => {
     var hoursIs24 = ( preferences.clockDisplay === "12h" ) ? false : true;
     var hours = evt.date.getHours( );
@@ -164,8 +166,13 @@ clock.ontick = ( evt ) => {
         hoursText = ( hours <= 9 ) ? ( "0" + hours.toString( ) ) : hours.toString( );
         ampmText.text = "";
     } else {
-        hoursText = ( ( hours > 12 ) ? ( hours - 12 ) : hours ).toString( );
         ampmText.text = ( hours >= 12 ) ? "pm" : "am";
+
+        // hackhackhack
+        hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+        hours = ( hours == 0 ) ? 12 : hours;
+
+        hoursText = hours.toString( );
     }
 
     clockText.text = hoursText + ":" + minsText;
@@ -174,7 +181,7 @@ clock.ontick = ( evt ) => {
 display.addEventListener( "change", ( ) => {
     if ( display.on ) {
         if ( ! updateStarsInterval ) {
-            updateStarsInterval = setInterval( updateStars, 50 );
+            updateStarsInterval = setInterval( updateStars, starsUpdateRate );
         }
     } else {
         clearInterval( updateStarsInterval );
@@ -182,4 +189,4 @@ display.addEventListener( "change", ( ) => {
     }
 });
 
-updateStarsInterval = setInterval( updateStars, 50 );
+updateStarsInterval = setInterval( updateStars, starsUpdateRate );
