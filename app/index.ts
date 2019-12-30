@@ -8,10 +8,10 @@ import { peerSocket, MessageEvent } from "messaging";
 var simpleDate: boolean = false;
 var shouldShowDate: boolean = true;
 
-var animationSpeed: number = 100;
+var animationSpeed: number = ( 1000 / 20 );
 var starsCount: number = 25;
 var warpSpeed: number = 1;
-var clockColor: string = "black";
+var clockColor: string = "skyblue";
 
 var screenCenterX: number = 0;
 var screenCenterY: number = 0;
@@ -79,8 +79,8 @@ function birthNewStar( elem_in: CircleElement ) {
     starDistX = Math.abs( screenCenterX - starX );
     starDistY = Math.abs( screenCenterY - starY );
 
-    dx = ( starX < screenCenterX ) ? -1 : 1;
-    dy = ( starY < screenCenterY ) ? -1 : 1;
+    dx = ( starX < screenCenterX ) ? -1 + -Math.random( ) : 1 + Math.random( );
+    dy = ( starY < screenCenterY ) ? -1 + -Math.random( ) : 1 + Math.random( );
 
     if ( dx == 0 && dy == 0 ) {
         dx++;
@@ -196,7 +196,7 @@ function getSuffixFromDay( dayNumber: number ) {
     return "th";
 }
 
-clock.granularity = "seconds";
+clock.granularity = "minutes";
 clock.ontick = ( evt: TickEvent ) => {
     var hoursIs24: boolean = ( preferences.clockDisplay === "12h" ) ? false : true;
     var hours: number = evt.date.getHours( );
@@ -204,7 +204,6 @@ clock.ontick = ( evt: TickEvent ) => {
     var date: number = evt.date.getDate( );
     var hoursText: string;
     var minsText: string;
-    let monthOnesCol: number = date % 10;
 
     minsText = ( mins > 9 ) ? mins.toString( ) : ( "0" + mins.toString( ) );
 
@@ -258,8 +257,6 @@ peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
 
     switch ( key ) {
         case "clockColor": {
-            console.info( "clockColor: " + value );
-
             clockColor = JSON.parse( value );
 
             clockText.style.fill = clockColor;
@@ -280,8 +277,6 @@ peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
             // Clamp animation speed to between 33 and 1000ms
             animationSpeed = ( animationSpeed < 33 ) ? 33 : animationSpeed;
             animationSpeed = ( animationSpeed > 1000 ) ? 1000 : animationSpeed;
-
-            console.log( "new anim speed: " + animationSpeed + "ms" );
 
             if ( updateStarsInterval ) {
                 clearInterval( updateStarsInterval );
