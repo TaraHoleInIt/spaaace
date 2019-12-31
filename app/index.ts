@@ -3,13 +3,12 @@ import clock, { TickEvent } from "clock";
 import { display } from "display";
 import { preferences } from "user-settings";
 import { me as device } from "device";
-import { peerSocket, MessageEvent } from "messaging";
 import * as fs from "fs";
 
 var simpleDate: boolean = false;
 var shouldShowDate: boolean = true;
 
-var animationSpeed: number = ( 1000 / 20 );
+var animationSpeed: number = 1000;
 var starsCount: number = 25;
 var warpSpeed: number = 1;
 var clockColor: string = "skyblue";
@@ -23,11 +22,6 @@ var updateStarsInterval = 0;
 let dateText = document.getElementById( "dateText" ) as TextElement;
 let clockText = document.getElementById( "clockText" ) as TextElement;
 let ampmText = document.getElementById( "ampmText" ) as TextElement;
-
-interface saveRestore {
-    key: string;
-    value: string;
-}
 
 interface star {
     x: number;
@@ -186,6 +180,21 @@ let weekdayNames: string[ ] = [
     "Saturday"
 ];
 
+let monthNames: string[ ] = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+];
+
 // solution from https://stackoverflow.com/questions/2050805/getting-day-suffix-when-using-datetime-tostring
 function getSuffixFromDay( dayNumber: number ) {
     switch ( dayNumber ) {
@@ -202,7 +211,7 @@ function getSuffixFromDay( dayNumber: number ) {
     return "th";
 }
 
-clock.granularity = "minutes";
+clock.granularity = "seconds";
 clock.ontick = ( evt: TickEvent ) => {
     var hoursIs24: boolean = ( preferences.clockDisplay === "12h" ) ? false : true;
     var hours: number = evt.date.getHours( );
@@ -227,13 +236,18 @@ clock.ontick = ( evt: TickEvent ) => {
     }
 
     clockText.text = hoursText + ":" + minsText;
+    dateText.text = "";
 
-    if ( shouldShowDate == true ) {
-        dateText.text = weekdayNames[ evt.date.getDay( ) ];
+    if ( showDayButton.value == 1 ) {
+        dateText.text += weekdayNames[ evt.date.getDay( ) ];
+    }
 
-        if ( simpleDate == false ) {
-            dateText.text+= " the " + date.toString( ) + getSuffixFromDay( date );
-        }
+    if ( showMonthButton.value == 1 ) {
+        dateText.text += " " + monthNames[ evt.date.getMonth( ) ];
+    }
+
+    if ( showDateButton.value == 1 ) {
+        dateText.text += " " + evt.date.getDate( );
     }
 };
 
@@ -257,129 +271,223 @@ dateText.style.fill = clockColor;
 
 updateStarsInterval = setInterval( updateStars, animationSpeed );
 
-let defaultSettings: saveRestore[ ] = [
-    { key: "clockColor", value: `"skyblue"` },
-    { key: "simpleDate", value: `false` },
-    { key: "shouldShowDate", value: `true` },
-    { key: "starsCount", value: `10` },
-    { key: "warpSpeed", value: `1` },
-    { key: "animationSpeed", value: `100` }
+interface saveRestore {
+    key: string;
+    value: string;
+}
+
+let settingsPage: GraphicsElement = document.getElementById( "settingsPage" ) as GraphicsElement;
+let mainButton: GraphicsElement = document.getElementById( "mainButton" ) as GraphicsElement;
+
+let settingsClockColorText: GraphicsElement = document.getElementById( "settingsClockColorText" ) as GraphicsElement;
+let settingsClockColor: string = "fb-cyan";
+
+let hideDayButton: Element = document.getElementById( "hideDayButton" ) as Element;
+let showDayButton: Element = document.getElementById( "showDayButton" ) as Element;
+
+let hideDateButton: Element = document.getElementById( "hideDateButton" ) as Element;
+let showDateButton: Element = document.getElementById( "showDateButton" ) as Element;
+
+let hideMonthButton: Element = document.getElementById( "hideMonthButton" ) as Element;
+let showMonthButton: Element = document.getElementById( "showMonthButton" ) as Element;
+
+let slowAnimationSpeedButton: Element = document.getElementById( "slowAnimationSpeedButton" ) as Element;
+let medAnimationSpeedButton: Element = document.getElementById( "medAnimationSpeedButton" ) as Element;
+let fastAnimationSpeedButton: Element = document.getElementById( "fastAnimationSpeedButton" ) as Element;
+
+let warp1Button: Element = document.getElementById( "warp1Button" ) as Element;
+let warp2Button: Element = document.getElementById( "warp2Button" ) as Element;
+let warp3Button: Element = document.getElementById( "warp3Button" ) as Element;
+let warp4Button: Element = document.getElementById( "warp4Button" ) as Element;
+let warp5Button: Element = document.getElementById( "warp5Button" ) as Element;
+
+let saveSettingsButton: Element = document.getElementById( "saveSettingsButton" ) as Element;
+let discardSettingsButton: Element = document.getElementById( "discardSettingsButton" ) as Element;
+
+let colorButtons: GraphicsElement[ ] = [
+    document.getElementById( "chooseRedButton" ) as GraphicsElement,
+    document.getElementById( "chooseGreenButton" ) as GraphicsElement,
+    document.getElementById( "chooseBlueButton" ) as GraphicsElement,
+    document.getElementById( "chooseWhiteButton" ) as GraphicsElement,
+
+    document.getElementById( "chooseMagentaButton" ) as GraphicsElement,
+    document.getElementById( "chooseMintButton" ) as GraphicsElement,
+    document.getElementById( "chooseCyanButton" ) as GraphicsElement,
+    document.getElementById( "chooseGrayButton" ) as GraphicsElement,
+
+    document.getElementById( "choosePurpleButton" ) as GraphicsElement,
+    document.getElementById( "chooseLimeButton" ) as GraphicsElement,
+    document.getElementById( "chooseAquaButton" ) as GraphicsElement,
+    document.getElementById( "chooseSlateButton" ) as GraphicsElement,
 ];
 
-function saveRestore_SetDefaults( ) {
-    defaultSettings.forEach( ( item: saveRestore, index: number ) => {
-        handleSettingsChange( item.key, item.value );
+function getAnimationSpeed( ) {
+    if ( fastAnimationSpeedButton.value == 1 ) {
+        return "fast";
     }
-);}
+    else if ( medAnimationSpeedButton.value == 1 ) {
+        return "med";
+    }
+
+    return "slow";
+}
+
+function getWarpSpeed( ) {
+    if ( warp5Button.value == 1 ) {
+        return 5;
+    }
+    else if ( warp4Button.value == 1 ) {
+        return 4;
+    }
+    else if ( warp3Button.value == 1 ) {
+        return 3;
+    }
+    else if ( warp2Button.value == 1 ) {
+        return 2;
+    }
+
+    return 1;
+}
+
+function settingsSetDefaults( ) {
+    settingsClockColor = "fb-cyan";
+    settingsClockColorText.style.fill = "fb-cyan";
+
+    hideDayButton.value = 0;
+    showDayButton.value = 1;
+
+    hideDateButton.value = 0;
+    showDateButton.value = 1;
+
+    hideMonthButton.value = 0;
+    showMonthButton.value = 1;
+
+    slowAnimationSpeedButton.value = 1;
+    medAnimationSpeedButton.value = 0;
+    fastAnimationSpeedButton.value = 0;
+
+    warp1Button.value = 1;
+    warp2Button.value = 0;
+    warp3Button.value = 0;
+    warp4Button.value = 0;
+    warp5Button.value = 0;
+}
 
 function saveRestore_Save( ) {
-    fs.writeFileSync( "space.set", JSON.stringify( [
-        { key: "clockColor", value: `"${clockColor}"` },
-        { key: "simpleDate", value: simpleDate },
-        { key: "shouldShowDate", value: shouldShowDate },
-        { key: "starsCount", value: starsCount },
-        { key: "warpSpeed", value: warpSpeed },
-        { key: "animationSpeed", value: animationSpeed }
-    ], ), "json" );
+    let settings: saveRestore[ ] = [
+        { key: "clockColor", value: settingsClockColor },
+        { key: "showDay", value: showDayButton.value ? "1" : "0" },
+        { key: "showDate", value: showDateButton.value ? "1" : "0" },
+        { key: "showMonth", value: showMonthButton.value ? "1" : "0" },
+        { key: "animationSpeed", value: getAnimationSpeed( ) },
+        { key: "warpSpeed", value: getWarpSpeed( ).toString( ) }
+    ];
+
+    fs.writeFileSync( "space.set", JSON.stringify( settings ), "json" );
 }
 
 function saveRestore_Restore( ) {
-    let saveData: saveRestore[ ] = JSON.parse( fs.readFileSync( "space.set", "json" ) );
+    let settings: saveRestore[ ];
 
-    console.info( "saveRestore_Restore( ): " );
+    if ( fs.existsSync( "space.set" ) ) {
+        settings = JSON.parse( fs.readFileSync( "space.set", "json" ) );
 
-    saveData.forEach( ( item: saveRestore, index: number ) => {
-        console.log( item.key + "/" + item.value );
-        handleSettingsChange( item.key, item.value );
-    });
-}
+        settingsClockColor = settings[ 0 ].value;
+        settingsClockColorText.style.fill = settingsClockColor;
 
-if ( fs.existsSync( "space.set" ) ) {
-    console.info( "Settings found!" );
-    saveRestore_Restore( );
-} else {
-    console.info( "Settings not found, setting defaults" );
+        clockColor = settingsClockColor;
+        clockText.style.fill = clockColor;
+        ampmText.style.fill = clockColor;
+        dateText.style.fill = clockColor;
 
-    saveRestore_SetDefaults( );
-    saveRestore_Save( );
-}
+        hideDayButton.value = Number( settings[ 1 ].value ) ? 0 : 1;
+        showDayButton.value = Number( settings[ 1 ].value ) ? 1 : 0;
 
-function handleSettingsChange( key: string, value: string ) {
-    switch ( key ) {
-        case "clockColor": {
-            clockColor = JSON.parse( value );
+        hideDateButton.value = Number( settings[ 2 ].value ) ? 0 : 1;
+        showDateButton.value = Number( settings[ 2 ].value ) ? 1 : 0;
 
-            clockText.style.fill = clockColor;
-            ampmText.style.fill = clockColor;
-            dateText.style.fill = clockColor;
+        hideMonthButton.value = Number( settings[ 3 ].value ) ? 0 : 1;
+        showMonthButton.value = Number( settings[ 3 ].value ) ? 1 : 0;
 
-            console.log( "clockColor: " + clockColor );
+        fastAnimationSpeedButton.value = settings[ 4 ].value == "fast" ? 1 : 0;
+        medAnimationSpeedButton.value = settings[ 4 ].value == "med" ? 1 : 0;
+        slowAnimationSpeedButton.value = settings[ 4 ].value == "slow" ? 1 : 0;
 
-            break;
-        }
-        case "starsCount": {
-            starsCount = Number( value );
+        warp1Button.value = settings[ 5 ].value == "1" ? 1 : 0;
+        warp2Button.value = settings[ 5 ].value == "2" ? 1 : 0;
+        warp3Button.value = settings[ 5 ].value == "3" ? 1 : 0;
+        warp4Button.value = settings[ 5 ].value == "4" ? 1 : 0;
+        warp5Button.value = settings[ 5 ].value == "5" ? 1 : 0;
 
-            console.log( "starsCount: " + starsCount );
-
-            initStars( );
-            break;
-        }
-        case "animationSpeed": {
-            animationSpeed = Number( value );
-
-            // Clamp animation speed to between 33 and 1000ms
-            animationSpeed = ( animationSpeed < 33 ) ? 33 : animationSpeed;
-            animationSpeed = ( animationSpeed > 1000 ) ? 1000 : animationSpeed;
-
-            console.log( "animationSpeed: " + animationSpeed );
-
-            if ( updateStarsInterval ) {
-                clearInterval( updateStarsInterval );
+        switch ( getAnimationSpeed( ) ) {
+            case "fast": {
+                animationSpeed = 20;
+                break;
             }
-
-            if ( display.on ) {
-                updateStarsInterval = setInterval( updateStars, animationSpeed );
+            case "med": {
+                animationSpeed = 50;
+                break;
             }
+            case "slow":
+            default: {
+                animationSpeed = 100;
+                break;
+            }
+        }
 
-            break;
+        if ( updateStarsInterval ) {
+            clearInterval( updateStarsInterval );
+            updateStarsInterval = setInterval( updateStars, animationSpeed );
         }
-        case "warpSpeed": {
-            warpSpeed = Number( value );
-
-            // Clamp warp to between 1 and 9
-            warpSpeed = ( warpSpeed < 1 ) ? 1 : warpSpeed;
-            warpSpeed = ( warpSpeed > 9 ) ? 9 : warpSpeed;
-
-            break;
-        }
-        case "showDate": {
-            dateText.style.visibility = ( value === "true" ) ? "visible" : "hidden";
-            shouldShowDate = ( value == "true" ) ? true : false;
-            break;
-        }
-        case "simpleDate": {
-            simpleDate = ( value == "true" ) ? true : false;
-            break;
-        }
-        default: break;
+        
+        warpSpeed = getWarpSpeed( );
+    } else {
+        settingsSetDefaults( );
+        saveRestore_Save( );
     }
-
-    saveRestore_Save( );
 }
 
-peerSocket.addEventListener( "message", ( evt: MessageEvent ) => {
-    var key: string = evt.data.key as string;
-    var value: string = evt.data.value as string;
+saveRestore_Restore( );
 
-    handleSettingsChange( key, value );
+colorButtons.forEach( ( item: GraphicsElement, index: number ) => {
+    item.onactivate = ( evt: Event ) => {
+        // BUG?
+        // emulator vs hw difference
+        settingsClockColor = item.style.fill as string; //item.style.fill.substring( 0, item.style.fill.length - 2 );
+        settingsClockColorText.style.fill = settingsClockColor;
+    };
 });
 
-peerSocket.addEventListener( "open", ( evt: Event ) => {
-    peerSocket.send( { key: "clockColor", value: `"${clockColor}"`} );
-    peerSocket.send( { key: "simpleDate", value: simpleDate } );
-    peerSocket.send( { key: "showDate", value: shouldShowDate } );
-    peerSocket.send( { key: "starsCount", value: starsCount } );
-    peerSocket.send( { key: "warpSpeed", value: warpSpeed } );
-    peerSocket.send( { key: "animationSpeed", value: animationSpeed } );
+saveSettingsButton.onactivate = ( evt: Event ) => {
+    saveRestore_Save( );
+    saveRestore_Restore( );
+
+    settingsPage.style.visibility = "hidden";
+    mainButton.style.visibility = "visible";
+};
+
+discardSettingsButton.onactivate = ( evt: Event ) => {
+    saveRestore_Restore( );
+
+    settingsPage.style.visibility = "hidden";
+    mainButton.style.visibility = "visible";
+};
+
+var clickCheckHandle: number = 0;
+var clickCount: number = 0;
+
+mainButton.addEventListener( "activate", ( evt: Event ) => {
+    clickCount++;
+
+    if ( ! clickCheckHandle ) {
+        clickCheckHandle = setTimeout( ( ) => {
+            if ( clickCount >= 2 ) {
+                settingsPage.style.visibility = "visible";
+                mainButton.style.visibility = "hidden";
+            }
+
+            clickCount = 0;
+            clickCheckHandle = 0;
+        }, 300 );
+    }
 });

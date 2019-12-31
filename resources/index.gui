@@ -29,4 +29,113 @@
 	<text id="ampmText" />
 
 	<text id="dateText" />
+
+	<svg id="settingsPage" x="0" y="0" width="100%" height="100%" visibility="hidden">
+		<rect x="0" y="0" width="100%" height="100%" fill="black" />
+		<use href="#scrollview">
+			<use href="#scrollview-item">
+				<rect x="0" y="0" width="100%" height="100%" fill="black" />
+				<text id="settingsClockColorText" fill="white" x="50%" y="10%" text-anchor="middle">Clock color</text>
+
+				<use id="chooseRedButton" href="#push-button" y="25%" x="10%" width="10%" height="10%" fill="fb-red"/>
+				<use id="chooseGreenButton" href="#push-button" y="25%" x="35%" width="10%" height="10%" fill="fb-green" />
+				<use id="chooseBlueButton" href="#push-button" y="25%" x="60%" width="10%" height="10%" fill="fb-blue" />
+				<use id="chooseWhiteButton" href="#push-button" y="25%" x="85%" width="10%" height="10%" fill="fb-white" />
+				
+				<use id="chooseMagentaButton" href="#push-button" y="50%" x="10%" width="10%" height="10%" fill="fb-magenta" />
+				<use id="chooseMintButton" href="#push-button" y="50%" x="35%" width="10%" height="10%" fill="fb-mint" />
+				<use id="chooseCyanButton" href="#push-button" y="50%" x="60%" width="10%" height="10%" fill="fb-cyan" />
+				<use id="chooseGrayButton" href="#push-button" y="50%" x="85%" width="10%" height="10%" fill="fb-light-gray" />
+
+				<use id="choosePurpleButton" href="#push-button" y="75%" x="10%" width="10%" height="10%" fill="fb-purple" />
+				<use id="chooseLimeButton" href="#push-button" y="75%" x="35%" width="10%" height="10%" fill="fb-lime" />
+				<use id="chooseAquaButton" href="#push-button" y="75%" x="60%" width="10%" height="10%" fill="fb-aqua" />
+				<use id="chooseSlateButton" href="#push-button" y="75%" x="85%" width="10%" height="10%" fill="fb-slate" />
+			</use>
+			<use href="#scrollview-item">
+				<rect x="0" y="0" width="100%" height="100%" fill="black" />
+				<text fill="white" x="50%" y="10%" text-anchor="middle">Clock settings</text>
+
+				<svg y="25%" height="70">
+					<use id="hideDayButton" href="#square-button-toggle" fill="fb-light-gray">
+						<set href="#text" attributeName="text-buffer" to="Hide day" />
+					</use>
+					<use id="showDayButton" href="#square-button-toggle" fill="fb-green" x="50%">
+						<set href="#text" attributeName="text-buffer" to="Show day" />
+					</use>
+				</svg>
+
+				<svg y="50%" height="70">
+					<use id="hideDateButton" href="#square-button-toggle" fill="fb-light-gray">
+						<set href="#text" attributeName="text-buffer" to="Hide date" />
+					</use>
+					<use id="showDateButton" href="#square-button-toggle" fill="fb-green" x="50%">
+						<set href="#text" attributeName="text-buffer" to="Show date" />
+					</use>
+				</svg>
+
+				<svg y="75%" height="70">
+					<use id="hideMonthButton" href="#square-button-toggle" fill="fb-light-gray">
+						<set href="#text" attributeName="text-buffer" to="Hide month" />
+					</use>
+					<use id="showMonthButton" href="#square-button-toggle" fill="fb-green" x="50%">
+						<set href="#text" attributeName="text-buffer" to="Show month" />
+					</use>
+				</svg>					
+			</use>
+			<use href="#scrollview-item">
+				<rect x="0" y="0" width="100%" height="100%" fill="black" />
+				<text fill="white" x="50%" y="10%" text-anchor="middle">Starfield settings</text>
+				<text fill="white" x="0%" y="25%" text-anchor="start" font-size="24">Animation speed:</text>
+
+				<svg y="30%" height="25">
+					<use id="slowAnimationSpeedButton" href="#square-button-toggle" fill="fb-red" x="0" width="33%">
+						<set href="#text" attributeName="text-buffer" to="slow" />
+					</use>
+					<use id="medAnimationSpeedButton" href="#square-button-toggle" fill="fb-yellow" x="33%" width="33%">
+						<set href="#text" attributeName="text-buffer" to="medium" />
+					</use>
+					<use id="fastAnimationSpeedButton" href="#square-button-toggle" fill="fb-green" x="66%" width="33%">
+						<set href="#text" attributeName="text-buffer" to="fast" />
+					</use>
+				</svg>
+
+				<text fill="white" x="0%" y="65%" text-anchor="start" font-size="24">Warp speed:</text>
+
+				<svg y="70%" height="25">
+					<use id="warp1Button" href="#square-button-toggle" fill="fb-white" x="0" width="20%">
+						<set href="#text" attributeName="text-buffer" to="1" />
+					</use>
+					<use id="warp2Button" href="#square-button-toggle" fill="fb-white" x="20%" width="20%">
+						<set href="#text" attributeName="text-buffer" to="2" />
+					</use>
+					<use id="warp3Button" href="#square-button-toggle" fill="fb-white" x="40%" width="20%">
+						<set href="#text" attributeName="text-buffer" to="3" />
+					</use>
+					<use id="warp4Button" href="#square-button-toggle" fill="fb-white" x="60%" width="20%">
+						<set href="#text" attributeName="text-buffer" to="4" />
+					</use>
+					<use id="warp5Button" href="#square-button-toggle" fill="fb-white" x="80%" width="20%">
+						<set href="#text" attributeName="text-buffer" to="5" />
+					</use>
+				</svg>
+			</use>
+			<use href="#scrollview-item">
+				<rect x="0" y="0" width="100%" height="100%" fill="black" />
+				<use href="#mixed-text-center-mid" height="100%" fill="fb-cyan">
+					<set href="#header/text" attributeName="text-buffer" to="Save your changes?" />
+					<set href="#copy/text" attributeName="text-buffer" to="Press the check button to save your changes." />
+				</use>
+				<use id="saveSettingsButton" href="#square-button-icon" x="0" y="100%-50" width="50%" height="50"fill="fb-green">
+					<set href="#text" attributeName="text-buffer" to="Save" />
+					<set href="#image" attributeName="href" to="check.png" />
+				</use>
+				<use id="discardSettingsButton" href="#square-button-icon" x="50%" y="100%-50" width="50%" height="50"fill="fb-red">
+					<set href="#text" attributeName="text-buffer" to="Discard" />
+					<set href="#image" attributeName="href" to="x.png" />
+				</use>
+			</use>
+		</use>
+	</svg>
+	<use id="mainButton" href="#push-button" x="0" y="0" width="100%" height="100%" fill="fb-cyan" opacity="0" />
 </svg>
