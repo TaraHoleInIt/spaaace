@@ -17,7 +17,7 @@ var screenCenterX: number = 0;
 var screenCenterY: number = 0;
 var screenWidth: number = 0;
 var screenHeight: number = 0;
-var updateStarsInterval = 0;
+var updateStarsInterval: number = 0;
 
 let dateText = document.getElementById( "dateText" ) as TextElement;
 let clockText = document.getElementById( "clockText" ) as TextElement;
@@ -269,7 +269,7 @@ clockText.style.fill = clockColor;
 ampmText.style.fill = clockColor;
 dateText.style.fill = clockColor;
 
-updateStarsInterval = setInterval( updateStars, animationSpeed );
+//updateStarsInterval = setInterval( updateStars, animationSpeed );
 
 interface saveRestore {
     key: string;
@@ -437,9 +437,9 @@ function saveRestore_Restore( ) {
 
         if ( updateStarsInterval ) {
             clearInterval( updateStarsInterval );
-            updateStarsInterval = setInterval( updateStars, animationSpeed );
         }
-        
+
+        updateStarsInterval = setInterval( updateStars, animationSpeed );
         warpSpeed = getWarpSpeed( );
     } else {
         settingsSetDefaults( );
