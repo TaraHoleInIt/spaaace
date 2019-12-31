@@ -453,7 +453,7 @@ colorButtons.forEach( ( item: GraphicsElement, index: number ) => {
     item.onactivate = ( evt: Event ) => {
         // BUG?
         // emulator vs hw difference
-        settingsClockColor = item.style.fill as string; //item.style.fill.substring( 0, item.style.fill.length - 2 );
+        settingsClockColor = item.style.fill;//item.style.fill.substring( 0, item.style.fill.length - 2 );
         settingsClockColorText.style.fill = settingsClockColor;
     };
 });
