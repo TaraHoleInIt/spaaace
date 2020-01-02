@@ -247,7 +247,7 @@ clock.ontick = ( evt: TickEvent ) => {
     }
 
     if ( showDateButton.value == 1 ) {
-        dateText.text += " " + evt.date.getDate( );
+        dateText.text += " " + date + getSuffixFromDay( date );
     }
 };
 
@@ -262,21 +262,13 @@ display.addEventListener( "change", ( ) => {
     }
 });
 
-initStars( );
-updateStars( );
-
-clockText.style.fill = clockColor;
-ampmText.style.fill = clockColor;
-dateText.style.fill = clockColor;
-
-//updateStarsInterval = setInterval( updateStars, animationSpeed );
-
 interface saveRestore {
     key: string;
     value: string;
 }
 
 let settingsPage: GraphicsElement = document.getElementById( "settingsPage" ) as GraphicsElement;
+let settingsView: Element = document.getElementById( "settingsView" ) as Element;
 let mainButton: GraphicsElement = document.getElementById( "mainButton" ) as GraphicsElement;
 
 let settingsClockColorText: GraphicsElement = document.getElementById( "settingsClockColorText" ) as GraphicsElement;
@@ -443,9 +435,18 @@ function saveRestore_Restore( ) {
         warpSpeed = getWarpSpeed( );
     } else {
         settingsSetDefaults( );
+
         saveRestore_Save( );
+        saveRestore_Restore( );
     }
 }
+
+initStars( );
+updateStars( );
+
+clockText.style.fill = clockColor;
+ampmText.style.fill = clockColor;
+dateText.style.fill = clockColor;
 
 saveRestore_Restore( );
 
@@ -482,6 +483,8 @@ mainButton.addEventListener( "activate", ( evt: Event ) => {
     if ( ! clickCheckHandle ) {
         clickCheckHandle = setTimeout( ( ) => {
             if ( clickCount >= 2 ) {
+                settingsView.value = 0;
+
                 settingsPage.style.visibility = "visible";
                 mainButton.style.visibility = "hidden";
             }
